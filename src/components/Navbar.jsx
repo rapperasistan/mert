@@ -1,18 +1,30 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Phone, MapPin } from 'lucide-react'
+import { Menu, X, Phone, Mail, MapPin, ChevronDown } from 'lucide-react'
 
 const navLinks = [
-  { label: 'Anasayfa', href: '#anasayfa' },
   { label: 'Hakkımızda', href: '#hakkimizda' },
-  { label: 'Hizmetler', href: '#hizmetler' },
-  { label: 'Galeri', href: '#galeri' },
+  {
+    label: 'Hizmetler',
+    href: '#hizmetler',
+    dropdown: [
+      'Evde Dikiş Alma Ve Atma',
+      'Evde Sonda Değişimi',
+      'Hasta Bakım Hizmeti',
+      'Glutatyon Vitamin Tedavisi',
+      'Evde Serum Hizmetleri',
+      'Evde Pansuman',
+      'Evde Enjeksiyon Hizmeti',
+    ],
+  },
+  { label: 'Blog', href: '#blog' },
   { label: 'İletişim', href: '#iletisim' },
 ]
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -23,17 +35,25 @@ export default function Navbar() {
   return (
     <>
       {/* Top Bar */}
-      <div className="bg-primary-800 text-white text-sm py-2 px-4 hidden md:block">
+      <div className="bg-primary-900 text-white text-sm py-2.5 px-4 hidden md:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <MapPin size={14} />
-            <span>Bahçeşehir, Başakşehir / İstanbul</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Phone size={14} />
+              <a href="tel:+905319296216" className="hover:text-primary-200 transition-colors">
+                0531 929 62 16
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail size={14} />
+              <a href="mailto:lifeistanbulevdesaglikk@gmail.com" className="hover:text-primary-200 transition-colors">
+                lifeistanbulevdesaglikk@gmail.com
+              </a>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <Phone size={14} />
-            <a href="tel:+905305649112" className="hover:text-primary-200 transition-colors">
-              +90 530 564 91 12
-            </a>
+            <MapPin size={14} />
+            <span>İstanbul</span>
           </div>
         </div>
       </div>
@@ -42,45 +62,55 @@ export default function Navbar() {
       <motion.nav
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg'
+            ? 'bg-white/95 backdrop-blur-xl shadow-lg'
             : 'bg-white'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-18">
             {/* Logo */}
             <a href="#anasayfa" className="flex items-center gap-3 group">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:shadow-primary-500/40 transition-shadow">
-                <span className="text-white font-bold text-xl">M</span>
+              <div className="w-10 h-10 bg-primary-900 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">L</span>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 leading-tight">Mert</h1>
-                <p className="text-xs text-primary-600 font-medium tracking-wider uppercase">Sağlık Kabini</p>
-              </div>
+              <span className="text-sm font-bold text-primary-900 tracking-wide uppercase">
+                Life Istanbul Evde Sağlık
+              </span>
             </a>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <a
+                <div
                   key={link.href}
-                  href={link.href}
-                  className="px-4 py-2 rounded-lg text-gray-600 hover:text-primary-700 hover:bg-primary-50 transition-all font-medium text-sm"
+                  className="relative"
+                  onMouseEnter={() => link.dropdown && setDropdownOpen(true)}
+                  onMouseLeave={() => link.dropdown && setDropdownOpen(false)}
                 >
-                  {link.label}
-                </a>
-              ))}
-            </div>
+                  <a
+                    href={link.href}
+                    className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-primary-700 transition-all font-medium text-sm"
+                  >
+                    {link.label}
+                    {link.dropdown && <ChevronDown size={14} />}
+                  </a>
 
-            {/* CTA Button */}
-            <div className="hidden md:flex items-center gap-4">
-              <a
-                href="tel:+905305649112"
-                className="flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-5 py-2.5 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg shadow-primary-600/25 hover:shadow-primary-600/40 font-medium text-sm"
-              >
-                <Phone size={16} />
-                Hemen Ara
-              </a>
+                  {/* Dropdown */}
+                  {link.dropdown && dropdownOpen && (
+                    <div className="absolute top-full left-0 bg-white rounded-lg shadow-xl border border-gray-100 py-2 min-w-[220px] z-50">
+                      {link.dropdown.map((item) => (
+                        <a
+                          key={item}
+                          href="#hizmetler"
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                        >
+                          {item}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Mobile Menu Button */}
@@ -113,13 +143,14 @@ export default function Navbar() {
                     {link.label}
                   </a>
                 ))}
-                <a
-                  href="tel:+905305649112"
-                  className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-5 py-3 rounded-xl font-medium"
-                >
-                  <Phone size={16} />
-                  +90 530 564 91 12
-                </a>
+                <div className="pt-4 space-y-2 border-t border-gray-100 mt-2">
+                  <a href="tel:+905319296216" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600">
+                    <Phone size={14} /> 0531 929 62 16
+                  </a>
+                  <a href="mailto:lifeistanbulevdesaglikk@gmail.com" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600">
+                    <Mail size={14} /> lifeistanbulevdesaglikk@gmail.com
+                  </a>
+                </div>
               </div>
             </motion.div>
           )}
